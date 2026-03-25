@@ -28,17 +28,9 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        if (accessor != null) {
-            System.out.println(
-                    "CMD=" + accessor.getCommand()
-                            + ", DEST=" + accessor.getDestination()
-                            + ", USER=" + accessor.getUser()
-                            + ", AUTH=" + accessor.getFirstNativeHeader("Authorization")
-            );
-        }
-
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
             List<String> authHeaders = accessor.getNativeHeader("Authorization");
+
             if (authHeaders == null || authHeaders.isEmpty()) {
                 throw new MessageDeliveryException(message, "Missing Authorization header");
             }
@@ -54,16 +46,8 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
 
                 WebSocketPrincipal principal = new WebSocketPrincipal(userId, username);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                principal,
-                                null,
-                                List.of(new SimpleGrantedAuthority("ROLE_USER"))
-                        );
-
                 accessor.setUser(principal);
 
-                System.out.println("Authenticated user = " + username);
             } catch (JwtException ex) {
                 throw new MessageDeliveryException(message, "Invalid or expired token", ex);
             }
