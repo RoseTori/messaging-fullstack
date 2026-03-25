@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql:3306/messaging_app?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: _VtvtynjVjhb
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      host: redis
+      port: 6379
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+app:
+  broker:
+    relay-host: rabbitmq
+    relay-port: 61613
+    relay-username: guest
+    relay-password: guest

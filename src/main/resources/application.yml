@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: messaging-backend
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/messaging_app?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:_VtvtynjVjhb}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+server:
+  port: ${SERVER_PORT:8080}
+app:
+  jwt:
+    secret: ${JWT_SECRET:0123456789012345678901234567890101234567890123456789012345678901}
+    access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION_MS:3600000}
+  websocket:
+    allowed-origins: ${WEBSOCKET_ALLOWED_ORIGINS:*}
+  broker:
+    exchange: ${BROKER_EXCHANGE:messaging.exchange}
+    message-routing-key: ${BROKER_MESSAGE_ROUTING_KEY:message.created}
+    receipt-routing-key: ${BROKER_RECEIPT_ROUTING_KEY:receipt.updated}
+    relay-host: ${BROKER_RELAY_HOST:localhost}
+    relay-port: ${BROKER_RELAY_PORT:61613}
+    relay-username: ${BROKER_RELAY_USERNAME:guest}
+    relay-password: ${BROKER_RELAY_PASSWORD:guest}
+  rate-limit:
+    auth-per-minute: ${AUTH_RATE_LIMIT_PER_MINUTE:10}
+    message-per-minute: ${MESSAGE_RATE_LIMIT_PER_MINUTE:120}
+  presence:
+    ttl-seconds: ${PRESENCE_TTL_SECONDS:120}
+  typing:
+    ttl-seconds: ${TYPING_TTL_SECONDS:4}
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
